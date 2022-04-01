@@ -9,10 +9,12 @@ private:
 
 public:
     Circle( int a_xAxis, int a_yAxis, int a_radius );
-    ~Circle();
 
-    // Инициализация параметров
-    bool initCirle();
+    Shape * Clone() const override;
+
+    bool Draw() const override;
+
+    int AreaCulc() const override;
 
     // Расчет площади фигуры
 
@@ -21,4 +23,5 @@ public:
 
 
 };
+
 
