@@ -14,6 +14,8 @@ public:
     // Инициализация параметров
     bool initCirle();
 
+    // Расчет площади фигуры
+
     // Изменить радиус
     bool setRadius(int a_radius);
 

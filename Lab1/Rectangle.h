@@ -1,16 +1,14 @@
+#include "Shape.h"
+
+
 class Rectangle
 {
 private:
-    /* data */
+    int xAxis;
+    int yAxis;
+
 public:
-    Rectangle(/* args */);
+    Rectangle();
     ~Rectangle();
 };
 
-Rectangle::Rectangle(/* args */)
-{
-}
-
-Rectangle::~Rectangle()
-{
-}
