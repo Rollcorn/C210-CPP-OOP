@@ -1,24 +1,38 @@
+#pragma once
+
+#include <ostream>
 #include "Shape.h"
 
 
 class Rectangle : public Shape
 {
 private:
-    int xAxis;
-    int yAxis;
+    int m_xTopLeft;
+    int m_yTopLeft;
+    int m_xBotRight;
+    int m_yBotRight;
+
 
 public:
-    Rectangle();
+    Rectangle( ) : Shape(), m_xTopLeft(0), m_yTopLeft(0),
+                   m_xBotRight(0), m_yBotRight(0){}
+
+    Rectangle(colors color, int a_xTopLeft, int a_yTopLeft,
+              int a_xBotRight, int  a_yBotRight ) : Shape(color), m_xTopLeft(a_xTopLeft), m_yTopLeft(a_yTopLeft),
+                                                    m_xBotRight(a_xBotRight), m_yBotRight(a_yBotRight) {
+    }
 
     Shape * Clone() const override;
 
-    bool Draw() const override;
+    virtual void print(std::ostream &out) const override;
 
     int AreaCulc() const override;
 
     virtual bool operator==( const Shape &rhs) const;
 
+
 };
 
+std::ostream &operator<<(std::ostream &os, const Rectangle &rectangle);
 
 

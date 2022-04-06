@@ -13,8 +13,38 @@
 
 class List {
 
-private:
+public:
+    List();
 
+    /*
+     * Кончтруктор копирования
+     */
+    List( const List &a_list );
+
+    /*
+     * Вставка элемента в начало списка
+     */
+    void addToBegin(const Shape& a_shape);
+
+    /*
+     * Вставка элемента в конец списка
+     */
+    void addToEnd(const Shape& a_shape);
+
+    /*
+    * Удаление из списка всех элементов по ключу
+    */
+    int removeAll(const Shape& a_shape);
+
+    // Конструктор копирования
+    //    Оптимизированный вариант когда сравниваем совпадают ли текущие элементы и если они совпадают
+
+    // Конструктор перемещающий
+    //      Оставляем head и tail а весь кусок между ними замеяем другим списком
+
+    // Оператор присваивания: копирующий(глубокий) и перемещающий
+
+private:
     class Node {
     public:
         Node* pPrevious = nullptr;
@@ -27,21 +57,8 @@ private:
         Node( Node* a_prevNode, const Shape& a_shape );
     };
 
-    Node m_head;
-    Node m_tail;
-    size_t m_size;
+    Node    m_head;
+    Node    m_tail;
+    size_t  m_size;
 
-public:
-    void addToBegin(const Shape& shape);
-
-    void addToEnd(const Shape& shape);
-
-    int removeAll(const Shape& shape);
-
-    // Конструктор копирования
-    //    Оптимизированный вариант когда сравниваем совпадают ли текущие элементы и если они совпадают
-
-    // Конструктор перемещающий
-
-    List();
-}
+};

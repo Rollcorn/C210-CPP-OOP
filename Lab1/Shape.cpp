@@ -1,25 +1,27 @@
-#include "Shape.h";
+#include "Shape.h"
 
-Shape::Shape()
-{}
-
-Shape::~Shape()
-{}
-
-void Shape::SetColor( int newColor) {
+void Shape::SetColor(colors newColor) {
     color = newColor;
 }
 
-int Shape::GetColor() {
-    return color;
+std::string Shape::getColor() const {
+    return colorStrArr[color];
 }
-
-
 
 bool Shape::operator==( const Shape &rhs) const{
     return color == rhs.color;
 }
 
 bool Shape::operator!=( const Shape &rhs) const{
-    return this == ;
+    return color != rhs.color;
+}
+
+void Shape::print(std::ostream &out) const {
+    out << getColor();
+}
+
+std::ostream& operator<<(std::ostream &out, const Shape& i)
+{
+   i.print(out);
+   return out;
 }

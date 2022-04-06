@@ -1,27 +1,29 @@
 #pragma once
 
 #include "typeinfo"
+#include "iostream"
 
 class Shape
 {
 
-
 public:
-    enum colors{
+    enum colors  {
+        wight = 0,
         red = 1,
         green = 2,
         black = 3
-    };
+    } ;
 
-    Shape();
-    ~Shape();
+    Shape() : color(colors::red){}
+
+    Shape( colors color ) : color(color){}
 
     // установить цвет фигуры
-    void SetColor( int newColor);
+    void SetColor(colors newColor);
+
     // установить цвет фигуры
-    int GetColor();
-    // отрисовка фигуры
-    virtual bool Draw() const = 0;
+    std::string getColor() const;
+
     // Расчет площади фигуры
     virtual int AreaCulc() const = 0;
 
@@ -31,11 +33,12 @@ public:
 
     virtual bool operator!=( const Shape &rhs) const;
 
+    virtual void print(std::ostream &out) const;
+
 private:
     colors color;
-
-private:
-
+    std::string colorStrArr[4] = {"wight", "red", "green", "black" };
 
 };
 
+std::ostream& operator<<( std::ostream &out, const Shape& i );

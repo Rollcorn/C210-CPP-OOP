@@ -3,7 +3,6 @@
 //
 
 #include "List.h"
-#include "Circle.h"
 
 List::List() : m_size(0) {
     m_head.pNext = &m_tail;
@@ -11,30 +10,38 @@ List::List() : m_size(0) {
 }
 
 
-void List::addToBegin(const Shape& shape){
-    new Node( &m_head, shape );
+void List::addToBegin(const Shape& a_shape){
+    new Node(&(m_head), a_shape );
     ++m_size;
 }
+
 
 void List::addToEnd(const Shape &a_shape) {
     new Node( (m_tail.pPrevious), a_shape );
     ++m_size;
-
 }
 
-int List::removeAll(const Shape &shape) {
+
+int List::removeAll(const Shape &a_shape) {
     Node* currentNode = m_head.pNext;
     int removeCount = 0;
 
     while ( currentNode != &m_tail ){
-        if( currentNode->pShape == &shape ) {
+        if( currentNode->pShape == &a_shape ) {
             Node* tempNode = currentNode->pNext;
             currentNode->pNext->pPrevious = currentNode->pPrevious;
             currentNode->pPrevious->pNext = currentNode->pNext;
+            ++removeCount;
         } else {
             currentNode = currentNode->pNext;
         }
     }
+    return removeCount;
+}
+
+List::List(const List &a_list) {
+
+
 }
 
 
@@ -49,8 +56,3 @@ List::Node::Node() {
 List::Node::~Node() {
 
 }
-
-
-bool List::addToEnd(const Shape& shape);
-
-bool List::removeAll(const Shape& shape);
