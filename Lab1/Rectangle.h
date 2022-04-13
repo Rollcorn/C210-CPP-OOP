@@ -11,7 +11,8 @@ private:
     int m_yTopLeft;
     int m_xBotRight;
     int m_yBotRight;
-
+public:
+    bool operator!=(const Shape &rhs) const override;
 
 public:
     Rectangle( ) : Shape(), m_xTopLeft(0), m_yTopLeft(0),
@@ -26,10 +27,11 @@ public:
 
     virtual void print(std::ostream &out) const override;
 
-    int AreaCulc() const override;
+    int AreaCalc() const override;
 
     virtual bool operator==( const Shape &rhs) const;
 
+    virtual Shape& operator=(const Shape& a_other);
 
 };
 

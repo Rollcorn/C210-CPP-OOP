@@ -25,7 +25,7 @@ public:
     std::string getColor() const;
 
     // Расчет площади фигуры
-    virtual int AreaCulc() const = 0;
+    virtual int AreaCalc() const = 0;
 
     virtual Shape * Clone() const = 0;
 
@@ -34,6 +34,8 @@ public:
     virtual bool operator!=( const Shape &rhs) const;
 
     virtual void print(std::ostream &out) const;
+
+    virtual Shape& operator=(const Shape& a_other);
 
 private:
     colors color;

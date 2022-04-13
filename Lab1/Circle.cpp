@@ -13,12 +13,13 @@ Shape *Circle::Clone() const {
 }
 
 bool Circle::setRadius(int a_radius) {
-    return false;
+    m_radius = a_radius;
+    return true;
 }
 
-int Circle::AreaCulc() const {
+int Circle::AreaCalc() const {
 
-    return 0;
+    return 2 * s_pi * m_radius * m_radius;
 }
 
 bool Circle::operator==(const Shape &rhs) const {

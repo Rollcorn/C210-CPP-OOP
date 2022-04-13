@@ -20,6 +20,11 @@ void Shape::print(std::ostream &out) const {
     out << getColor();
 }
 
+Shape &Shape::operator=(const Shape &a_other) {
+    this->color = a_other.color;
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream &out, const Shape& i)
 {
    i.print(out);

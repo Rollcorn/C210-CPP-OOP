@@ -5,8 +5,8 @@
 #include "Rectangle.h"
 
 
-int Rectangle::AreaCulc() const {
-    return 0;
+int Rectangle::AreaCalc() const {
+    return (m_xBotRight - m_xTopLeft) * (m_yTopLeft - m_yBotRight);
 }
 
 Shape *Rectangle::Clone() const {
@@ -20,13 +20,30 @@ void Rectangle::print(std::ostream &out) const {
 
 
 bool Rectangle::operator==(const Shape &rhs) const {
-    bool result;
-    if( const Rectangle* mRec = dynamic_cast<const Rectangle*>(&rhs) ){
+    if( const Rectangle* mRec = dynamic_cast<const Rectangle*>(&rhs) )
+    {
         return this->m_xTopLeft == mRec->m_xTopLeft && this->m_yTopLeft == mRec->m_yTopLeft
                && this->m_xBotRight == mRec->m_xBotRight && this->m_yBotRight == mRec->m_yBotRight
                && Shape::operator==(rhs);
     }
     return false;
+}
+
+bool Rectangle::operator!=(const Shape &rhs) const {
+    return Shape::operator!=(rhs);
+}
+
+Shape& Rectangle::operator=(const Shape &a_other) {
+    //Shape::operator=(a_other);
+    if( const Rectangle* mRec = dynamic_cast<const Rectangle*>(&a_other) )
+    {
+      // this->m_xBotRight = mRec->m_xBotRight;
+      // this->m_xTopLeft = mRec->m_xTopLeft;
+      // this->m_yBotRight = mRec->m_yBotRight;
+      // this->m_yTopLeft = mRec->m_yTopLeft;
+        *this = static_cast<const Rectangle&>(a_other);
+    }
+    return *this;
 }
 
 std::ostream &operator<<(std::ostream &os, const Rectangle &rectangle) {

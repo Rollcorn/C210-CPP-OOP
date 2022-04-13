@@ -1,64 +1,74 @@
 //
 // Created by rollcorn on 01.04.2022.
 //
-
 #pragma once
 
 #include <cstddef>
+
 #include "Shape.h"
 #include "Circle.h"
 #include "Rectangle.h"
-
 #include "typeinfo"
+
+class Node;
 
 class List {
 
 public:
+    // Стандартный конструктор
     List();
 
-    /*
-     * Кончтруктор копирования
-     */
+    // Конcтруктор копирования
     List( const List &a_list );
 
-    /*
-     * Вставка элемента в начало списка
-     */
+    // Перемещающий конcтруктор
+    List( List &&a_list );
+
+    // Вставка элемента в начало списка
     void addToBegin(const Shape& a_shape);
 
-    /*
-     * Вставка элемента в конец списка
-     */
+    // Вставка элемента в конец списка
     void addToEnd(const Shape& a_shape);
 
-    /*
-    * Удаление из списка всех элементов по ключу
-    */
+    // Удаление из списка всех элементов по ключу
     int removeAll(const Shape& a_shape);
 
-    // Конструктор копирования
-    //    Оптимизированный вариант когда сравниваем совпадают ли текущие элементы и если они совпадают
+    // Копирующий оператор присванивания
+    List& operator=(const List& a_other);
 
-    // Конструктор перемещающий
-    //      Оставляем head и tail а весь кусок между ними замеяем другим списком
+    // Перемещающий оператор присваивания
+    List& operator=(const List&& a_other);
 
-    // Оператор присваивания: копирующий(глубокий) и перемещающий
+    // Оператор вывода
+    friend std::ostream& operator<<( std::ostream &out, const List& i );
+
+    // Получить размер списка
+    size_t getMSize() const;
+
+    // Сортировака списка
+    List& sort( bool (*)( Node, Node ) );
+
 
 private:
     class Node {
     public:
-        Node* pPrevious = nullptr;
-        Node* pNext = nullptr;
-        Shape* pShape = nullptr;
+        Node*   pPrevious = nullptr;
+        Node*   pNext = nullptr;
+        Shape*  pShape = nullptr;
 
-        Node();
-        ~Node();
+        friend std::ostream& operator<<( std::ostream &out, const List& i );
 
+        Node() = default;
         Node( Node* a_prevNode, const Shape& a_shape );
+        ~Node();
     };
 
-    Node    m_head;
+
+
+    Node  m_head;
     Node    m_tail;
     size_t  m_size;
 
 };
+
+std::ostream& operator<<( std::ostream &out, const List& i );
