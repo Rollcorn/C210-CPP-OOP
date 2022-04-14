@@ -15,11 +15,13 @@ class Node;
 class List {
 
 public:
+
+
     // Стандартный конструктор
     List();
 
     // Конcтруктор копирования
-    List( const List &a_list );
+    List( const List &a_otherList );
 
     // Перемещающий конcтруктор
     List( List &&a_list );
@@ -37,7 +39,7 @@ public:
     List& operator=(const List& a_other);
 
     // Перемещающий оператор присваивания
-    List& operator=(const List&& a_other);
+    List& operator=(List&& a_other);
 
     // Оператор вывода
     friend std::ostream& operator<<( std::ostream &out, const List& i );
@@ -46,8 +48,25 @@ public:
     size_t getMSize() const;
 
     // Сортировака списка
-    List& sort( bool (*)( Node, Node ) );
+    template<typename T>
+    void sort( T pred ) {
+        List::Node* firstNodePtr = m_head.pNext;
+        List::Node* secNodePtr = m_head.pNext;
+        Node *temp = new Node;
 
+        while ( firstNodePtr != &m_tail ) {
+            while ( secNodePtr != &m_tail ) {
+                if ( pred( *firstNodePtr->pShape, *secNodePtr->pShape ) ){
+                    temp->pShape = firstNodePtr->pShape;
+                    firstNodePtr->pShape = secNodePtr->pShape;
+                    secNodePtr->pShape = temp->pShape;
+                }
+                secNodePtr = secNodePtr->pNext;
+            }
+            firstNodePtr = firstNodePtr->pNext;
+            secNodePtr = firstNodePtr->pNext;
+        }
+    }
 
 private:
     class Node {
@@ -56,14 +75,12 @@ private:
         Node*   pNext = nullptr;
         Shape*  pShape = nullptr;
 
-        friend std::ostream& operator<<( std::ostream &out, const List& i );
+//        friend std::ostream& operator<<( std::ostream &out, const List& i );
 
         Node() = default;
         Node( Node* a_prevNode, const Shape& a_shape );
         ~Node();
     };
-
-
 
     Node  m_head;
     Node    m_tail;
@@ -71,4 +88,4 @@ private:
 
 };
 
-std::ostream& operator<<( std::ostream &out, const List& i );
+std::ostream& operator<<(std::ostream &a_out, const List& a_lst );

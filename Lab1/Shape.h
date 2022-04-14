@@ -8,15 +8,19 @@ class Shape
 
 public:
     enum colors  {
-        wight = 0,
-        red = 1,
-        green = 2,
-        black = 3
-    } ;
+        wight   = 0,
+        red     = 1,
+        yellow   = 2,
+        green   = 3,
+        blue    = 4,
+        black   = 5
+    };
 
     Shape() : color(colors::red){}
 
-    Shape( colors color ) : color(color){}
+    virtual ~Shape();
+
+    Shape(colors color) : color(color){}
 
     // установить цвет фигуры
     void SetColor(colors newColor);
@@ -39,7 +43,7 @@ public:
 
 private:
     colors color;
-    std::string colorStrArr[4] = {"wight", "red", "green", "black" };
+    std::string colorStrArr[6] = {"wight", "red", "yellow", "green", "blue", "black" };
 
 };
 

@@ -18,7 +18,6 @@ bool Circle::setRadius(int a_radius) {
 }
 
 int Circle::AreaCalc() const {
-
     return 2 * s_pi * m_radius * m_radius;
 }
 
@@ -40,7 +39,7 @@ bool Circle::operator!=(const Shape &rhs) const {
 
 void Circle::print(std::ostream &out) const {
     Shape::print(out);
-    out << " R:" << m_radius << " X:" << m_xAxis << "   Y:" << m_yAxis;
+    out << ", R:" << m_radius << " X:" << m_xAxis << " Y:" << m_yAxis;
 }
 
 std::ostream &operator<<(std::ostream &os, const Circle &circle) {

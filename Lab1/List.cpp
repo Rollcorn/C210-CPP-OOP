@@ -1,7 +1,3 @@
-//
-// Created by rollcorn on 01.04.2022.
-//
-
 #include "List.h"
 
 // Стандартный конструктор
@@ -11,19 +7,30 @@ List::List() : m_size(0) {
 }
 
 // Копирующий конструктор копирования
-List::List( const List &a_list ) {
-    m_head.pNext = &m_tail;
+List::List( const List &a_otherList ) {
+    m_head.pNext     = &m_tail;
     m_tail.pPrevious = &m_head;
-
     Node* firstCurNode  = &this->m_head;
-    Node* otherCurNode  = a_list.m_head.pNext;
+    Node* otherCurNode  = a_otherList.m_head.pNext;
 
-    while ( otherCurNode != &a_list.m_tail ) {
+    while ( otherCurNode != &a_otherList.m_tail ) {
         new Node( firstCurNode, *otherCurNode->pShape );
         otherCurNode = otherCurNode->pNext;
         firstCurNode = firstCurNode->pNext;
     }
-    m_size = a_list.m_size;
+    m_size = a_otherList.m_size;
+}
+
+// Перемещающий конструктор
+List::List( List &&a_list ) {
+    this->m_head.pNext = a_list.m_head.pNext;
+    this->m_tail.pPrevious = a_list.m_tail.pPrevious;
+    a_list.m_tail.pPrevious->pNext = &this->m_tail;
+    this->m_size = a_list.m_size;
+
+    a_list.m_head.pNext = &a_list.m_tail;
+    a_list.m_tail.pPrevious = &a_list.m_head;
+    a_list.m_size = 0;
 }
 
 // Добавить элемент в начало списка
@@ -33,26 +40,23 @@ void List::addToBegin(const Shape& a_shape){
 }
 
 // Добавить элемент в конец списка
-void List::addToEnd(const Shape &a_shape) {
+void List::addToEnd( const Shape &a_shape ) {
     new Node( (m_tail.pPrevious), a_shape );
     ++m_size;
 }
 
 // Удалить все элементы заданой фигуры из списка
-int List::removeAll(const Shape &a_shape) {
+int List::removeAll( const Shape &a_shape ) {
     Node* currentNode = m_head.pNext;
     int removeCount = 0;
 
-    while ( currentNode != &m_tail ){
+    while ( currentNode != &m_tail ) {
         Node* tempNode = currentNode->pNext;
-
         if( *currentNode->pShape == a_shape ) {
             delete currentNode;
             ++removeCount;
-
         }
-            currentNode = tempNode;
-
+        currentNode = tempNode;
     }
     m_size -= removeCount;
     return removeCount;
@@ -60,7 +64,6 @@ int List::removeAll(const Shape &a_shape) {
 
 // Копирующий оператор присваивания
 List &List::operator=(const List &a_other) {
-
     Node* firstCurNode  = this->m_head.pNext;
     Node* otherCurNode  = a_other.m_head.pNext;
 
@@ -76,44 +79,48 @@ List &List::operator=(const List &a_other) {
         otherCurNode = otherCurNode->pNext;
     }
     // Если первый список короче или они равны
-    for ( int i = a_other.m_size; i < this->m_size; ++i ){
+    for ( size_t i = a_other.m_size; i < this->m_size; ++i ){
         delete m_tail.pPrevious;
     }
-
-    for ( int i = this->m_size; i < a_other.m_size; ++i ){
+    //
+    for ( size_t i = this->m_size; i < a_other.m_size; ++i ) {
         new Node(m_tail.pPrevious, *otherCurNode->pShape);
         otherCurNode = otherCurNode->pNext;
     }
-
     m_size = a_other.m_size;
-
     return *this;
 }
 
-// TODO Перемещающий оператор присваивания
-List &List::operator=(const List &&a_other) {
-    this->m_head.pNext = a_other.m_head.pNext;
-    this->m_tail.pPrevious = a_other.m_tail.pPrevious;
-    this->m_size = a_other.m_size;
+// Перемещающий оператор присваивания
+List &List::operator=(List &&a_other) {
+    Node* curNode  = this->m_head.pNext;
+    Node* nextNode = nullptr;
+
+    while ( curNode != &m_tail ) {
+        nextNode = curNode->pNext;
+        delete curNode;
+        curNode = nextNode;
+    }
+
+    m_head.pNext = a_other.m_head.pNext;
+    m_tail.pPrevious = a_other.m_tail.pPrevious;
+    m_size = a_other.m_size;
+
     a_other.m_head.pNext = nullptr;
     a_other.m_tail.pPrevious = nullptr;
     a_other.m_size = 0;
-
-//    TODO delete nodes
-
     return *this;
 }
 
 // Оператор вывода списка
-std::ostream &operator<<(std::ostream &out, const List &lst) {
+std::ostream &operator<<(std::ostream &a_out, const List &a_lst) {
+    List::Node* curNode = a_lst.m_head.pNext;
 
-    List::Node* curNode = lst.m_head.pNext;
-
-    while ( curNode != &lst.m_tail ) {
-        out << " { " << *curNode->pShape << " } ";
+    while ( curNode != &a_lst.m_tail ) {
+        a_out << "{ " << *curNode->pShape << ", Area[" << curNode->pShape->AreaCalc() << "] } " ;
         curNode = curNode->pNext;
     }
-    return out;
+    return a_out;
 }
 
 // Получить размер списка
@@ -121,29 +128,12 @@ size_t List::getMSize() const {
     return m_size;
 }
 
-// Перемещающий конструктор
-List::List(List &&a_list) {
-    this->m_head.pNext = a_list.m_head.pNext;
-    this->m_tail.pPrevious = a_list.m_tail.pPrevious;
-    this->m_size = a_list.m_size;
-    a_list.m_head.pNext = nullptr;
-    a_list.m_tail.pPrevious = nullptr;
-    a_list.m_size = 0;
-}
-
-List &List::sort( bool (*)(Node, Node) ) {
-
-    return <#initializer#>;
-}
-
-
 // Конструктор звена списка
-List::Node::Node( Node* a_prevNode, const Shape& a_shape ){
+List::Node::Node( Node* a_prevNode, const Shape& a_shape ) {
     this->pPrevious = a_prevNode;
     this->pNext = a_prevNode->pNext;
     a_prevNode->pNext = this;
     pNext->pPrevious = this;
-
     pShape = a_shape.Clone();
 }
 
@@ -159,6 +149,3 @@ List::Node::~Node() {
     this->pNext = nullptr;
     delete this->pShape;
 }
-
-
-

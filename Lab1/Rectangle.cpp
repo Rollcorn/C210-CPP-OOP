@@ -37,18 +37,12 @@ Shape& Rectangle::operator=(const Shape &a_other) {
     //Shape::operator=(a_other);
     if( const Rectangle* mRec = dynamic_cast<const Rectangle*>(&a_other) )
     {
-      // this->m_xBotRight = mRec->m_xBotRight;
-      // this->m_xTopLeft = mRec->m_xTopLeft;
-      // this->m_yBotRight = mRec->m_yBotRight;
-      // this->m_yTopLeft = mRec->m_yTopLeft;
         *this = static_cast<const Rectangle&>(a_other);
     }
     return *this;
 }
 
 std::ostream &operator<<(std::ostream &os, const Rectangle &rectangle) {
-    // os << static_cast<const Shape &>(rectangle) << " Coordinates: ["
-    //    << rectangle.xAxis << ", " << rectangle.yAxis << "] ";
     rectangle.print(os);
     return os;
 }

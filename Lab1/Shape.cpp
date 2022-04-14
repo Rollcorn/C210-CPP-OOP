@@ -25,6 +25,10 @@ Shape &Shape::operator=(const Shape &a_other) {
     return *this;
 }
 
+Shape::~Shape() {
+
+}
+
 std::ostream& operator<<(std::ostream &out, const Shape& i)
 {
    i.print(out);
