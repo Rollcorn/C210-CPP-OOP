@@ -4,7 +4,7 @@
 #include "List.h"
 #include "Rectangle.h"
 
-// Функтор сравнения фигур по возрастанию площади
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 struct AreaShapeCompare
 {
     bool operator()( const Shape& sh1 , const Shape& sh2 ) const {
@@ -12,7 +12,7 @@ struct AreaShapeCompare
     }
 };
 
-// Функтор сравнения фигур по цвету от белого к черному
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 struct ColorShapeCompare
 {
     bool operator()( const Shape& sh1 , const Shape& sh2 ) const {
