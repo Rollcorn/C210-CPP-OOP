@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 
 */
 
+/*
     int iX = 1, iY = -1;
     std::cout << "iX: " << iX << ", iY: " << iY << std::endl;
     Swap(iX, iY);
@@ -46,6 +47,9 @@ int main(int argc, char* argv[])
     std::cout << "dX: " << dX << ", dY: " << dY << std::endl;
     Swap(dX, dY);
     std::cout << "dX: " << dX << ", dY: " << dY << std::endl;
+
+*/
+
 /////////////////////////////////////////////////////////////////////
 
     //Тема. Шаблоны классов.
@@ -68,7 +72,7 @@ int main(int argc, char* argv[])
     //push() и pop(), operator[]
 
 
-
+/*
     MyStack<int, 10> iStack;
     iStack.push(1);
 
@@ -84,35 +88,73 @@ int main(int argc, char* argv[])
     for (int i = 10; i >= 0; --i ) {
         std::cout << "iStack.pop() " << iStack.pop() << std::endl;
     }
-
+*/
 
     //Задание 2. Реализуйте шаблон стека - MyStack2 таким образом, чтобы
     //для хранения элементов использовался ОДНОСВЯЗНЫЙ список.
     //Реализуйте возможность распечатать элементы стека в том порядке, в котором их заносил (push())
     //пользователь
+
+
     try {
-
-
     LstStack<int> iLstStack;
 
+    std::cout << "TEST 1)\tFill iLstStack by elements from 0 to 9"<< std::endl;
     for (int i = 0; i < 10; ++i ) {
         std::cout << "iLstStack.push(" << i << ")" << std::endl;
         iLstStack.push(i);
     }
+    std::cout << iLstStack << std::endl;
     std::cout << std::endl;
 
+
+    std::cout << "TEST 2)\tMove Construct iLstStack to iLstStack2" << std::endl;
     LstStack<int> iLstStack2( std::move(iLstStack) );
-
-    std::cout << "Вытащили всё из iLstStack"<< std::endl;
-    for (int i = 10; i >= 0; --i ) {
-        std::cout << "iLstStack.pop() : " << iLstStack.pop() << std::endl;
-    }
+    std::cout << "iLstStack After move() : " <<  iLstStack << std::endl;
+    std::cout << "iLstStack2 After move() : " <<  iLstStack2 << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Вытащили всё из iLstStack2"<< std::endl;
-    for (int i = 10; i >= 0; --i ) {
-        std::cout << "iLstStack2.pop() : " << iLstStack2.pop() << std::endl;
+
+    std::cout << "TEST 3)\tCopy Construct iLstStack2 to iLstStack3" << std::endl;
+    LstStack<int> iLstStack3(iLstStack2);
+    std::cout << "iLstStack2 After Copy Assign : " <<  iLstStack2 << std::endl;
+    std::cout << "iLstStack3 After Copy Assign : " <<  iLstStack3 << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "TEST 4)\tCopy Assign iLstStack5 to iLstStack3" << std::endl;
+    LstStack<int> iLstStack5;
+    for (int i = 10; i < 25; ++i ) {
+        iLstStack5.push(i);
     }
+    std::cout << "iLstStack5 Before Copy Assign : " <<  iLstStack5 << std::endl;
+    std::cout << "iLstStack3 Before Copy Assign : " <<  iLstStack3 << std::endl;
+    iLstStack3 = iLstStack5;
+    std::cout << "iLstStack5 After Copy Assign : " <<  iLstStack5 << std::endl;
+    std::cout << "iLstStack3 After Copy Assign : " <<  iLstStack3 << std::endl;
+    std::cout << std::endl;
+
+
+    std::cout << "TEST 4)\tMove Assign iLstStack2 to iLstStack3" << std::endl;
+    LstStack<int> iLstStack4 = std::move(iLstStack3);
+    std::cout << "iLstStack3 After move assign : " <<  iLstStack3 << std::endl;
+    std::cout << "iLstStack4 After move assign : " <<  iLstStack4 << std::endl;
+    std::cout << std::endl;
+
+
+    std::cout << "TEST 5)\tPops all elems from iLstStack4"<< std::endl;
+    for (int i = 10; i > 0; --i ) {
+        std::cout << "iLstStack4.pop() : " << iLstStack4.pop() << std::endl;
+    }
+
+    std::cout << "TEST 6)\tAfter Pops all elems from iLstStack2"<< std::endl;
+    std::cout << iLstStack4 << std::endl;
+
+    std::cout << "TEST 7)\tTry to pops one more elem from iLstStack2"<< std::endl;
+    for (int i = 10; i > 0; --i ) {
+        std::cout << "iLstStack4.pop() : " << iLstStack4.pop() << std::endl;
+    }
+    std::cout << iLstStack4.pop() << std::endl;
+
     } catch (const char* msg) {
         std::cout << msg << std::endl;
 
