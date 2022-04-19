@@ -47,14 +47,20 @@ public:
 
     // Конструктор копирования
     LstStack(const LstStack<T> &a_other) {
+        std::cout << "copy constructor" <<  std::endl;
         ListNode *curNode = a_other.m_head.m_next;
+        ListNode *thisCurNode = &m_head;
+
         while (curNode != nullptr) {
-            new ListNode(m_head, curNode->m_val);
+            new ListNode(*thisCurNode, curNode->m_val);
+            curNode = curNode->m_next;
+            thisCurNode = thisCurNode->m_next;
         }
     }
 
     // Перемещающий конструктор
     LstStack(LstStack<T> &&a_other) {
+        std::cout << "move constructor" <<  std::endl;
         this->m_head.m_next = a_other.m_head.m_next;
         a_other.m_head.m_next = nullptr;
     }
@@ -78,7 +84,7 @@ public:
     }
 
     // Сериализация элементов списка в поток
-    std::ostream & print(std::ostream &a_out, const LstStack &a_lst) const {
+    std::ostream& print(std::ostream &a_out, const LstStack &a_lst) const {
         if (a_lst.m_head.m_next == nullptr) {
             a_out << "EMPTY";
         } else {
@@ -87,33 +93,33 @@ public:
         return a_out;
     }
 
+    // Оператор вывода
     template<T>
     friend std::ostream &operator<<(std::ostream &a_out, const LstStack<T> &a_lst);
 
     // Копирующий оператор присваивания
     LstStack& operator=(const LstStack &a_other) {
-        ListNode* firstCurNode  = this->m_head.pNext;
-        ListNode* otherCurNode  = a_other.m_head.pNext;
-        ListNode* tempNode;
+        std::cout << "copy assign" <<  std::endl;
+        ListNode* firstCurNode  = this->m_head.m_next;  // тот которому присваиваем
+        ListNode* otherCurNode  = a_other.m_head.m_next;    // тот из котрого присваиваем
+        ListNode* tempNode = &this->m_head;
 
         while ( firstCurNode != nullptr && otherCurNode != nullptr ) {
             firstCurNode->m_val = otherCurNode->m_val;
             tempNode = firstCurNode;
-            firstCurNode = firstCurNode->pNext;
-            otherCurNode = otherCurNode->pNext;
+            firstCurNode = firstCurNode->m_next;
+            otherCurNode = otherCurNode->m_next;
         }
 
         // Если первый список короче
         if ( otherCurNode != nullptr ){
             firstCurNode = tempNode;
             while ( otherCurNode != nullptr ) {
-                new ListNode(firstCurNode, otherCurNode->m_val);
+                new ListNode(*firstCurNode, otherCurNode->m_val);
                 firstCurNode = firstCurNode->m_next;
                 otherCurNode = otherCurNode->m_next;
             }
-//            firstCurNode = firstCurNode->m_next;
-        } else
-        if ( firstCurNode != nullptr ) {
+        } else if ( firstCurNode != nullptr ) {
             tempNode->m_next = nullptr;
 
             while ( firstCurNode != nullptr ) {
@@ -126,7 +132,8 @@ public:
     }
 
     // Перемещающий оператор присваивания
-    LstStack& operator=(LstStack&& a_other){
+    LstStack& operator=( LstStack&& a_other ) {
+        std::cout << "move assign" <<  std::endl;
         ListNode* cur = m_head.m_next;
         ListNode tmp;
 
@@ -144,19 +151,5 @@ public:
 
 template<typename T>
 std::ostream &operator<<(std::ostream &a_out, const LstStack<T> &a_lst) {
-    return a_lst.print(a_out, a_lst);;
+    return a_lst.print(a_out, a_lst);
 }
-/*// Brutforce
-LstStack<T> tempStack;
-while (curNode != nullptr ){
-    tempStack.push(curNode->m_val);
-    curNode = curNode->m_next;
-}
-curNode = tempStack.m_head.m_next;
-while (curNode != nullptr) {
-    a_out << "[" << curNode->m_val << "] ";
-    ListNode* tmp = curNode;
-    curNode = curNode->m_next;
-    delete tmp;
-}
-*/
