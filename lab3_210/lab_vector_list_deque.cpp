@@ -68,17 +68,63 @@ bool insertIfAbsent( vector<T>& a_vec, const T& a_elem ) {
     return false;
 }
 
-// Вставить элемент после каждого элемента контейнера
+// Вставить элемент перед каждого элемента контейнера
 template<typename T>
 void separateInsert( vector<T>& a_vec, const T& a_elem ) {
-    typename std::vector<T>::iterator itbeg = a_vec.begin();
-
+    auto itbeg = a_vec.begin();
+    auto tmp = itbeg;
     while ( itbeg != a_vec.end() ) {
-        a_vec.insert(itbeg, a_elem);
+        itbeg = a_vec.insert( itbeg, a_elem );
+        ++itbeg;
         ++itbeg;
     }
 }
 
+// Удалить все повторяющиеся элемнты повторяющиеся
+template<typename T>
+void eraseAllCopyElem(vector<T>& a_vec) {
+    if ( a_vec.size() < 2 ){
+        return;
+    }
+
+    auto itbeg = a_vec.begin();
+    auto itprev = a_vec.begin();
+    T data = *itbeg;
+    auto itend = a_vec.end();
+    while ( itbeg != itend ) {
+        if (itbeg == itprev){
+            ++itbeg;
+        }
+        else if ( *itbeg == data ) {
+            ++itbeg;
+            if ( *itbeg != data ) {
+                itbeg = a_vec.erase(itprev, itbeg);
+                itprev = itbeg;
+                data = *itbeg;
+                itend = a_vec.end();
+            }
+        } else {
+            itprev = itbeg;
+            ++itbeg;
+            data = *itprev;
+        }
+    }
+}
+
+// Удалить повторяющиеся элементы
+template<typename T>
+void eraseCopyElem(vector<T>& a_vec) {
+    auto itbeg = a_vec.begin();
+    auto itprev = a_vec.begin();
+    while ( itbeg != a_vec.end() ) {
+        if ( itbeg != itprev && *itbeg == *itprev ) {
+            itbeg = a_vec.erase(itbeg);
+        } else {
+            itprev = itbeg;
+            ++itbeg;
+        }
+    }
+}
 
 int main()
 {
@@ -213,16 +259,16 @@ int main()
 		}
 		*/
     {
-        cout << "Резервирование памяти" << endl;
-        cout << "Test 1" << endl;
-        size_t n=10;
-        vector<int> v(n);
-        v.resize(n/2);
-        if(v.capacity() == n) { //true?
-            cout << "True. Capacity " << v.capacity() << endl;
-        } else {
-            cout << "False. Capacity " << v.capacity() << endl;
-        }
+            cout << "Резервирование памяти" << endl;
+            cout << "Test 1" << endl;
+            size_t n=10;
+            vector<int> v(n);
+            v.resize(n/2);
+            if(v.capacity() == n) { //true?
+                cout << "True. Capacity " << v.capacity() << endl;
+            } else {
+                cout << "False. Capacity " << v.capacity() << endl;
+            }
     }
 		/*
 		{
@@ -306,7 +352,7 @@ int main()
     {
         cout << "shrink_to_fit" << endl;
 
-        vector<int> vInt1;
+        vector<int> vInt1(5);
         for ( int i = 0; i < 7; ++i ) {
             vInt1.push_back(i);
         }
@@ -333,7 +379,7 @@ int main()
 	//std::cout<<vv<<std::endl;
     {
         int ar[] = {11,2,4,3,5};
-        vector< vector<int> > vInt1;
+        vector< vector<int> > vInt1(5);
         int arSize = sizeof (ar)/sizeof(int);
         for ( int i = 0; i < arSize; ++i ) {
             vInt1.push_back(vector<int>( ar[i],ar[i]) );
@@ -353,45 +399,54 @@ int main()
 		 //При попытке вставить 'a' попытка должна быть проигнорирована
 		 //При попытке вставить 'q' vChar2 - qabc 
     {
-	vector<char> vChar2;
-    printVector(vChar2);
-    vChar2.push_back('a');
-    vChar2.push_back('b');
-    vChar2.push_back('c');
-    printVector(vChar2);
-    cout << "Insert 'q'" << insertIfAbsent(vChar2, 'q') << endl;
-    insertIfAbsent(vChar2, 'a');
-    cout << "Insert \'a\'" << insertIfAbsent(vChar2, 'a') << endl;
-
-    printVector(vChar2);
-
-
+        vector<char> vChar2;
+        printVector(vChar2);
+        vChar2.push_back('a');
+        vChar2.push_back('b');
+        vChar2.push_back('c');
+        printVector(vChar2);
+        cout << "Insert 'q' - " << insertIfAbsent(vChar2, 'q') << endl;
+        insertIfAbsent(vChar2, 'a');
+        cout << "Insert 'a' - " << insertIfAbsent(vChar2, 'a') << endl;
+        printVector(vChar2);
 
     //Реализуйте функцию, которая должна вставлять новый элемент
 		 //перед каждым элементом вектора
 	//Проверьте работоспособность функции - вставьте перед каждым элементом вектора vChar2 букву 'W'
 
-	separateInsert(vChar2, 'W');
-    printVector(vChar2);
-
+        separateInsert(vChar2, 'W');
+        printVector(vChar2);
     }
 
 
 ///////////////////////////////////////////////////////////////////
 	//Напишите функцию, которая должна удалять только повторяющиеся последовательности.
 	//Например: было - "qwerrrrty12222r3", стало - "qwety1r3"
+    {
+        string str = "qqwweerrrrttyy112222rr33";
+        cout << "Before: " << str << endl;
+        vector<char> vChar3(str.begin(), str.end() );
+        eraseAllCopyElem(vChar3);
+        printVector(vChar3);
+        string str2(vChar3.begin(), vChar3.end());
+        cout << "After: " << str2 << endl;
+    }
 
-
-
-
-	
 
 ///////////////////////////////////////////////////////////////////
 
 	//Удаление элемента последовательности erase()
 	//Напишите функцию удаления из любого вектора всех дублей 
 		 //Например: было - "qwerrrrty12222r3", стало - "qwerty123"
-
+    {
+        string str = "qwerrrrty12222r3";
+        cout << "Before: " << str << endl;
+        vector<char> vChar3(str.begin(), str.end() );
+        eraseCopyElem(vChar3);
+        printVector(vChar3);
+        string str2(vChar3.begin(), vChar3.end());
+        cout << "After: " << str2 << endl;
+    }
 
 
 	
