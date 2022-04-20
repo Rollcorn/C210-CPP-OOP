@@ -115,8 +115,7 @@ public:
         if ( otherCurNode != nullptr ){
             firstCurNode = tempNode;
             while ( otherCurNode != nullptr ) {
-                new ListNode(*firstCurNode, otherCurNode->m_val);
-                firstCurNode = firstCurNode->m_next;
+                firstCurNode = new ListNode(*firstCurNode, otherCurNode->m_val);
                 otherCurNode = otherCurNode->m_next;
             }
         } else if ( firstCurNode != nullptr ) {

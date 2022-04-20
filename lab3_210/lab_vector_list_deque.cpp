@@ -11,16 +11,74 @@
 
 using namespace std;
 
+// Функция вывода вектора
 template<typename T>
-void printVector(vector<T> vec){
-	cout << "Size: " << vec.size() << ", Capacity: " << vec.capacity() 
-		 << ", Max Size: " << vec.max_size() << endl; 
-
+void printVector(const vector<T>& vec) {
+	cout << "Size: " << vec.size() << ", Capacity: " << vec.capacity()
+		 << ", Max Size: " << vec.max_size() << endl;
 	for ( int i = 0; i < vec.size(); ++i ) {
 		cout << "vec[" << i << "] = " << vec[i] << endl;
-
 	}
 }
+template<typename T>
+void printVector(const vector<T*>& vec) {
+	cout << "Size: " << vec.size() << ", Capacity: " << vec.capacity() 
+		 << ", Max Size: " << vec.max_size() << endl;
+	for ( int i = 0; i < vec.size(); ++i ) {
+		cout << "vec[" << i << "] = " << *vec[i] << endl;
+	}
+}
+
+template<typename T>
+std::ostream &operator<<(std::ostream &a_out, const vector<T> &a_vec) {
+    for ( int i = 0; i < a_vec.size(); ++i ) {
+        a_out << "vec[" << i << "] = " << a_vec[i] << " ";
+    }
+    a_out << endl;
+    return a_out;
+}
+
+class Point {
+private:
+	int m_x;
+	int m_y;
+public:
+	Point() : m_x(0), m_y(0) {}
+	Point(int a_x, int a_y):m_x(a_x), m_y(m_x){}
+	friend std::ostream &operator<<(std::ostream &a_out, const Point &a_pnt);
+};
+// Перегрузка оператора вывода объекта типа Point
+std::ostream &operator<<(std::ostream &a_out, const Point &a_pnt) {
+    a_out << "X: " << a_pnt.m_x << ", Y: " << a_pnt.m_y;
+	return a_out;
+}
+
+// Вставить элемент если он отсутствует в контейнере
+template<typename T>
+bool insertIfAbsent( vector<T>& a_vec, const T& a_elem ) {
+    typename std::vector<T>::iterator itbeg = a_vec.begin();
+
+    while (itbeg != a_vec.end() && *itbeg != a_elem ) {
+        ++itbeg;
+    }
+    if (itbeg == a_vec.end() ) {
+        a_vec.insert(a_vec.begin(), a_elem);
+        return true;
+    }
+    return false;
+}
+
+// Вставить элемент после каждого элемента контейнера
+template<typename T>
+void separateInsert( vector<T>& a_vec, const T& a_elem ) {
+    typename std::vector<T>::iterator itbeg = a_vec.begin();
+
+    while ( itbeg != a_vec.end() ) {
+        a_vec.insert(itbeg, a_elem);
+        ++itbeg;
+    }
+}
+
 
 int main()
 {
@@ -55,7 +113,7 @@ int main()
 	//выводит его "реквизиты" и значения элементов на консоль.
 	cout << "Size: " << vInt.size() << ", Capacity: " << vInt.capacity()
 		 << ", Max Size: " << vInt.max_size() << endl; 
-	for ( int i = 10; i < 20; ++i ) {
+	for ( int i = 10; i < 17; ++i ) {
 		vInt.push_back(i);
 		cout << "vec.push_back(" << i << ")" << endl;
 		cout << "Size: " << vInt.size() << ", Capacity: " << vInt.capacity()
@@ -111,8 +169,15 @@ int main()
 	//вектор элементов типа Point - vPoint1 а) с начальным размером 3. Какой конструктор
 	//будет вызван для каждого элемента?
 	//b) vPoint2 с начальным размером 5 и проинициализируйте каждый элемент координатами (1,1).
+	vector<Point> vPoint1(3);
+	vector<Point> vPoint2(5);
+	std::vector<Point>::iterator vBeg = vPoint2.begin();
+	while ( vBeg != vPoint2.end() ) {
+		*vBeg = Point(1,1);
+		++vBeg;
+	}
 
-
+	printVector(vPoint2);
 
 	//вектор указателей на Point - vpPoint с начальным размером 5
 	//Подумайте: как корректно заставить эти указатели "указывать" на объекты Point
@@ -121,8 +186,19 @@ int main()
 	//Подсказка: для вывода на печать значений скорее всего Вам понадобится
 		//а) специализация Вашей шаблонной функции
 		//б) или перегрузка operator<< для Point*
-
+        vector<Point *> vpPoint(5);
+        std::vector<Point *>::iterator vBeg = vpPoint.begin();
+        while ( vBeg != vpPoint.end() ) {
+            *vBeg = new Point(1,1);
+            ++vBeg;
+        }
+        printVector(vpPoint);
+        while ( vBeg != vpPoint.end() ) {
+            delete *vBeg;
+            ++vBeg;
+        }
 	}//Какие дополнительные действия нужно предпринять для такого вектора?
+
 
 
 	///////////////////////////////////////////////////////////////////////
@@ -136,7 +212,18 @@ int main()
 		if(v.capacity() == n) //true?
 		}
 		*/
-
+    {
+        cout << "Резервирование памяти" << endl;
+        cout << "Test 1" << endl;
+        size_t n=10;
+        vector<int> v(n);
+        v.resize(n/2);
+        if(v.capacity() == n) { //true?
+            cout << "True. Capacity " << v.capacity() << endl;
+        } else {
+            cout << "False. Capacity " << v.capacity() << endl;
+        }
+    }
 		/*
 		{
 		int n=...
@@ -146,7 +233,30 @@ int main()
 		if(v.capacity() == m) //true?
 		}
 		*/
-
+    {
+        cout << "Test 2 n = 5, m = 10" << endl;
+        int n=5;
+        size_t m=10;
+        vector<int> v(n);
+        v.reserve(m);
+        if(v.capacity() == m) { //true?
+            cout << "True. Capacity " << v.capacity() << endl;
+        } else {
+            cout << "False. Capacity " << v.capacity() << endl;
+        }
+    }
+    {
+        cout << "Test 2 n = 10, m = 5" << endl;
+        int n=10;
+        size_t m=5;
+        vector<int> v(n);
+        v.reserve(m);
+        if(v.capacity() == m) {//true?
+            cout << "True. Capacity " << v.capacity() << endl;
+        } else {
+            cout << "False. Capacity " << v.capacity() << endl;
+        }
+    }
 		/*
 		{
 		vector<int> v(3,5);
@@ -155,7 +265,16 @@ int main()
 	
 		}
 		*/
+    {
+        cout << "Test 3" << endl;
+        vector<int> v(3,5);
+        printVector(v);
+        v.resize(4,10); //значения?
+        printVector(v);
+        v.resize(5); //значения?
+        printVector(v);
 
+    }
 	//Создайте два "пустых" вектора с элементами
 	//любого (но одного и того же типа) типа. 
 	//В первом векторе зарезервируйте память под 5 элементов, а потом заполните
@@ -163,18 +282,42 @@ int main()
 	//Второй вектор просто заполните значениями посредством push_back.
 	//
 	//Сравните размер, емкость векторов и значения элементов
-
-
-
-	
-
-
+    {
+        cout << "Test 4" << endl;
+        vector<int> vInt1;
+        vector<int> vInt2;
+        vInt1.reserve(5);
+        printVector(vInt1);
+        printVector(vInt2);
+        for ( int i = 0; i < 10; ++i ) {
+            vInt1.push_back(i);
+        }
+        for ( int i = 9; i >= 0; --i ) {
+            vInt2.push_back(i);
+        }
+        printVector(vInt1);
+        printVector(vInt2);
+    }
 
 	//!!! shrink_to_fit - Уменьшение емкости вектора.
 	//Для любого вектора из предыдущего задания требуется уменьшить емкость
 	//до size.
 
-	
+    {
+        cout << "shrink_to_fit" << endl;
+
+        vector<int> vInt1;
+        for ( int i = 0; i < 7; ++i ) {
+            vInt1.push_back(i);
+        }
+        cout << "vInt1.size()" << vInt1.size() << endl;
+        cout << "vInt1.capacity()" << vInt1.capacity() << endl;
+        vInt1.shrink_to_fit();
+        cout << "vInt1.size()" << vInt1.size() << endl;
+        cout << "vInt1.capacity()" << vInt1.capacity() << endl;
+        printVector(vInt1);
+
+    }
 	
 
 	//Создание "двухмерного вектора" - вектора векторов
@@ -188,7 +331,15 @@ int main()
 	//с помощью:
 	
 	//std::cout<<vv<<std::endl;
-	 
+    {
+        int ar[] = {11,2,4,3,5};
+        vector< vector<int> > vInt1;
+        int arSize = sizeof (ar)/sizeof(int);
+        for ( int i = 0; i < arSize; ++i ) {
+            vInt1.push_back(vector<int>( ar[i],ar[i]) );
+        }
+        std::cout << vInt1 << std::endl;
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -201,13 +352,29 @@ int main()
 		 //например: vChar2 - abc 
 		 //При попытке вставить 'a' попытка должна быть проигнорирована
 		 //При попытке вставить 'q' vChar2 - qabc 
+    {
+	vector<char> vChar2;
+    printVector(vChar2);
+    vChar2.push_back('a');
+    vChar2.push_back('b');
+    vChar2.push_back('c');
+    printVector(vChar2);
+    cout << "Insert 'q'" << insertIfAbsent(vChar2, 'q') << endl;
+    insertIfAbsent(vChar2, 'a');
+    cout << "Insert \'a\'" << insertIfAbsent(vChar2, 'a') << endl;
+
+    printVector(vChar2);
 
 
-	
-	//Реализуйте функцию, которая должна вставлять новый элемент
+
+    //Реализуйте функцию, которая должна вставлять новый элемент
 		 //перед каждым элементом вектора
 	//Проверьте работоспособность функции - вставьте перед каждым элементом вектора vChar2 букву 'W'
-	
+
+	separateInsert(vChar2, 'W');
+    printVector(vChar2);
+
+    }
 
 
 ///////////////////////////////////////////////////////////////////
