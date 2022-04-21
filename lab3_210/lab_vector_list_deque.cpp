@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 
 
 #pragma warning(disable: 4786)
@@ -27,6 +28,15 @@ void printVector(const vector<T*>& vec) {
 	for ( int i = 0; i < vec.size(); ++i ) {
 		cout << "vec[" << i << "] = " << *vec[i] << endl;
 	}
+}
+
+// Функция вывода из контейнера
+template<typename IT>
+void print(IT beg, IT end) {
+    for ( int i = 0; beg != end; ++i ) {
+        cout << "[" << i << "] = " << *beg << endl;
+        ++beg;
+    }
 }
 
 template<typename T>
@@ -86,23 +96,17 @@ void eraseAllCopyElem(vector<T>& a_vec) {
     if ( a_vec.size() < 2 ){
         return;
     }
-
     auto itbeg = a_vec.begin();
     auto itprev = a_vec.begin();
     T data = *itbeg;
-    auto itend = a_vec.end();
-    while ( itbeg != itend ) {
-        if (itbeg == itprev){
-            ++itbeg;
-        }
-        else if ( *itbeg == data ) {
-            ++itbeg;
-            if ( *itbeg != data ) {
-                itbeg = a_vec.erase(itprev, itbeg);
-                itprev = itbeg;
-                data = *itbeg;
-                itend = a_vec.end();
+
+    while ( itbeg != a_vec.end() ) {
+        if ( itbeg != itprev && *itbeg == *itprev ) {
+            while (*itbeg == data){
+                ++itbeg;
             }
+            itbeg = a_vec.erase(itprev, itbeg);
+            itprev = itbeg;
         } else {
             itprev = itbeg;
             ++itbeg;
@@ -113,11 +117,12 @@ void eraseAllCopyElem(vector<T>& a_vec) {
 
 // Удалить повторяющиеся элементы
 template<typename T>
-void eraseCopyElem(vector<T>& a_vec) {
+void eraseDuplicateElem(vector<T>& a_vec) {
     auto itbeg = a_vec.begin();
     auto itprev = a_vec.begin();
     while ( itbeg != a_vec.end() ) {
         if ( itbeg != itprev && *itbeg == *itprev ) {
+
             itbeg = a_vec.erase(itbeg);
         } else {
             itprev = itbeg;
@@ -423,13 +428,37 @@ int main()
 	//Напишите функцию, которая должна удалять только повторяющиеся последовательности.
 	//Например: было - "qwerrrrty12222r3", стало - "qwety1r3"
     {
-        string str = "qqwweerrrrttyy112222rr33";
-        cout << "Before: " << str << endl;
-        vector<char> vChar3(str.begin(), str.end() );
+        cout << "[ eraseAllCopyElem() ]" << endl;
+
+        string str1 = "rrrrtyy222233";
+        string str2 = "qqqqqqqqq";
+        string str3 = "wert";
+        string str4 = "qwerrrrty12222r3";
+
+        cout << "Before: " << str1 << endl;
+        vector<char> vChar1(str1.begin(), str1.end() );
+        eraseAllCopyElem(vChar1);
+//        printVector(vChar3);
+        string rstr1(vChar1.begin(), vChar1.end());
+        cout << "After: " << rstr1 << endl;
+
+        cout << "Before: " << str2 << endl;
+        vector<char> vChar2(str2.begin(), str2.end() );
+        eraseAllCopyElem(vChar2);
+        string rstr2(vChar2.begin(), vChar2.end());
+        cout << "After: " << rstr2 << endl;
+
+        cout << "Before: " << str3 << endl;
+        vector<char> vChar3(str3.begin(), str3.end() );
         eraseAllCopyElem(vChar3);
-        printVector(vChar3);
-        string str2(vChar3.begin(), vChar3.end());
-        cout << "After: " << str2 << endl;
+        string rstr3(vChar3.begin(), vChar3.end());
+        cout << "After: " << rstr3 << endl;
+
+        cout << "Before: " << str4 << endl;
+        vector<char> vChar4(str4.begin(), str4.end() );
+        eraseAllCopyElem(vChar4);
+        string rstr4(vChar4.begin(), vChar4.end());
+        cout << "After: " << rstr4 << endl;
     }
 
 
@@ -439,11 +468,12 @@ int main()
 	//Напишите функцию удаления из любого вектора всех дублей 
 		 //Например: было - "qwerrrrty12222r3", стало - "qwerty123"
     {
+        cout << "[ eraseDuplicateElem() ]" << endl;
         string str = "qwerrrrty12222r3";
         cout << "Before: " << str << endl;
         vector<char> vChar3(str.begin(), str.end() );
-        eraseCopyElem(vChar3);
-        printVector(vChar3);
+        eraseDuplicateElem(vChar3);
+//        printVector(vChar3);
         string str2(vChar3.begin(), vChar3.end());
         cout << "After: " << str2 << endl;
     }
@@ -457,7 +487,28 @@ int main()
 	//были бы в обратном порядке
 
 
+    {
+        cout << "[ Reverse Iterator ]" << endl;
 
+        vector<char> vChar1;
+        vChar1.push_back('a');
+        vChar1.push_back('b');
+        vChar1.push_back('c');
+        vChar1.push_back('d');
+        vChar1.push_back('e');
+        vChar1.push_back('f');
+        printVector(vChar1);
+
+        vector<char> vChar2;
+
+        auto ritb = vChar1.rbegin();
+        while ( ritb != vChar1.rend() ) {
+            vChar2.push_back(*ritb);
+            ++ritb;
+        }
+        printVector(vChar2);
+
+    }
 
 
 
@@ -467,13 +518,26 @@ int main()
 	//Создайте пустой список из элементов Point - ptList1 и наполните
 	//его значениями с помощью методов push_back(),
 	//push_front, insert()
-	
+    {
+        list<Point> ptList1;
+        ptList1.push_back(Point(1, 3));
+        ptList1.push_front(Point(2, 2));
+        ptList1.insert(ptList1.cbegin(), Point(3, 1));
 
-	//Напишите шаблон функции, которая будет выводить элементы
-	//ЛЮБОГО КОНТЕЙНЕРА на печать. Проверьте работу шаблона на контейнерах
-	//vector и list. Подсказка - хотелось бы увидеть тип контейнера.
+        //Напишите шаблон функции, которая будет выводить элементы
+        //ЛЮБОГО КОНТЕЙНЕРА на печать. Проверьте работу шаблона на контейнерах
+        //vector и list. Подсказка - хотелось бы увидеть тип контейнера.
+        print(ptList1.begin(), ptList1.end());
 
-
+        vector<char> vChar1;
+        vChar1.push_back('a');
+        vChar1.push_back('b');
+        vChar1.push_back('c');
+        vChar1.push_back('d');
+        vChar1.push_back('e');
+        vChar1.push_back('f');
+        print(vChar1.begin(), vChar1.end());
+    }
 	//Сделайте любой из списков "реверсивным" - reverse()
 
 
