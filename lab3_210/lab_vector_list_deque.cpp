@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <deque>
 
 
 #pragma warning(disable: 4786)
@@ -48,19 +49,54 @@ std::ostream &operator<<(std::ostream &a_out, const vector<T> &a_vec) {
     return a_out;
 }
 
+
 class Point {
 private:
 	int m_x;
 	int m_y;
 public:
 	Point() : m_x(0), m_y(0) {}
-	Point(int a_x, int a_y):m_x(a_x), m_y(m_x){}
+	Point(int a_x, int a_y):m_x(a_x), m_y(a_y){}
 	friend std::ostream &operator<<(std::ostream &a_out, const Point &a_pnt);
+
+    int getMX() const{
+        return m_x;
+    }
+
+    int getMY() const{
+        return m_y;
+    }
+
+    bool operator==(const Point &rhs) const;
+
+    bool operator!=(const Point &rhs) const;
+
+    bool operator<(const Point &rhs) const;
 };
+
+// Предикат отрицательных координат
+bool hasNegCoord(const Point& a_point){
+    return a_point.getMX() < 0 || a_point.getMY() < 0;
+}
+
 // Перегрузка оператора вывода объекта типа Point
 std::ostream &operator<<(std::ostream &a_out, const Point &a_pnt) {
     a_out << "X: " << a_pnt.m_x << ", Y: " << a_pnt.m_y;
 	return a_out;
+}
+
+bool Point::operator<(const Point &rhs) const {
+    int leftDist = m_y*m_y + m_x*m_x;
+    int rightDist = rhs.m_y*rhs.m_y + rhs.m_x*rhs.m_x;
+    return leftDist < rightDist;
+}
+
+bool Point::operator==(const Point &rhs) const {
+    return m_x == rhs.m_x && m_y == rhs.m_y;
+}
+
+bool Point::operator!=(const Point &rhs) const {
+    return !(rhs == *this);
 }
 
 // Вставить элемент если он отсутствует в контейнере
@@ -519,6 +555,8 @@ int main()
 	//его значениями с помощью методов push_back(),
 	//push_front, insert()
     {
+        cout << "[ Insert elems in list ]" << endl;
+
         list<Point> ptList1;
         ptList1.push_back(Point(1, 3));
         ptList1.push_front(Point(2, 2));
@@ -539,43 +577,116 @@ int main()
         print(vChar1.begin(), vChar1.end());
     }
 	//Сделайте любой из списков "реверсивным" - reverse()
+    {
+        cout << "[ Reverse lists ]" << endl;
 
+        list<Point> ptList1;
+        ptList1.push_back(Point(2, 2));
+        ptList1.push_front(Point(1, 1));
+        ptList1.insert(ptList1.cbegin(), Point(3, 3));
+        ptList1.push_back(Point(4, 4));
+        cout << "Forward list" << endl;
+        print(ptList1.begin(), ptList1.end());
+
+        ptList1.reverse();
+        cout << "Reverse list" << endl;
+        print(ptList1.begin(), ptList1.end());
+
+    }
 
 	//Создайте список ptList2 из элементов Point таким образом, чтобы он стал 
 	//копией вектора элементов типа Point, но значения элементов списка располагались
 	//бы в обратном порядке 
 
+    {
+        cout << "[ ptList2 copy of vPoint ]" << endl;
 
+        vector<Point> vPoint;
+        vPoint.push_back(Point(2, 2));
+        vPoint.push_back(Point(1, 1));
+        vPoint.push_back(Point(3, 3));
+        vPoint.push_back(Point(4, 4));
+        print(vPoint.begin(), vPoint.end());
+
+        list<Point> ptList2( vPoint.rbegin(), vPoint.rend());
+        print(ptList2.begin(), ptList2.end());
+
+    }
 
 	//Отсортируйте списки  ptList1 и ptList2 - методом класса list - sort()
 	//по возрастанию.
 	//Подумайте: что должно быть перегружено в классе Point для того, чтобы
 	//работала сортировка
 
+    {
+        cout << "[ Отсортируйте списки  ptList1 и pList2 ]" << endl;
 
-	
+        list<Point> ptList1;
+        ptList1.push_back(Point(2, 2));
+        ptList1.push_front(Point(1, -1));
+        ptList1.push_front(Point(3, 3));
+        ptList1.push_back(Point(-4, 4));
+        cout << "Before" << endl;
+        print(ptList1.begin(), ptList1.end());
+        ptList1.sort();
+        cout << "After" << endl;
+        print(ptList1.begin(), ptList1.end());
+
+        list<Point> pList2;
+        pList2.push_back(Point(1, 9));
+        pList2.push_back(Point(4, -7));
+        pList2.push_back(Point(5, 6));
+        pList2.push_back(Point(-3, 8));
+        cout << "Before 2" << endl;
+        print(pList2.begin(), pList2.end());
+        pList2.sort();
+        cout << "After 2" << endl;
+        print(pList2.begin(), pList2.end());
 
 
 
-	//Объедините отсортированные списки - merge(). Посмотрите: что
-	//при этом происходит с каждым списком.
+        //Объедините отсортированные списки - merge(). Посмотрите: что
+        //при этом происходит с каждым списком.
+        cout << "[ Merge() ]" << endl;
 
-	
-	
-
-	//Исключение элемента из списка - remove()
-	//Исключите из списка элемент с определенным значением.
-	//Подумайте: что должно быть перегружено в классе Point?
-	
-
-	//Исключение элемента из списка, удовлетворяющего заданному условию:
-	//любая из координат отрицательна - remove_if(). 
+        pList2.merge(ptList1);
+        print(pList2.begin(), pList2.end());
 
 
-	//Исключение из списка подряд расположенных дублей - unique(). 
+        //Исключение элемента из списка - remove()
+        //Исключите из списка элемент с определенным значением.
+        //Подумайте: что должно быть перегружено в классе Point?
+        cout << "[ Remove(Point(5,6) ]" << endl;
 
-	
+        pList2.remove(Point(5, 6));
+        print(pList2.begin(), pList2.end());
 
+
+        //Исключение элемента из списка, удовлетворяющего заданному условию:
+        //любая из координат отрицательна - remove_if().
+        cout << "[ remove_if(negative) ]" << endl;
+
+        pList2.remove_if(hasNegCoord);
+        print(pList2.begin(), pList2.end());
+
+
+        //Исключение из списка подряд расположенных дублей - unique().
+        cout << "[ unique() ]" << endl;
+
+        pList2.push_back(Point(1,9));
+        pList2.push_back(Point(1,9));
+        pList2.push_back(Point(3,3));
+        pList2.push_back(Point(4,3));
+        pList2.push_back(Point(4,3));
+        pList2.push_back(Point(4,3));
+
+        cout << "Before 3" << endl;
+        print(pList2.begin(), pList2.end());
+        pList2.unique();
+        cout << "After 3" << endl;
+        print(pList2.begin(), pList2.end());
+
+    }
 ///////////////////////////////////////////////////////////////////
 	//Задание 2.Очередь с двумя концами - контейнер deque
 
@@ -583,15 +694,51 @@ int main()
 	//assign заполните deque копиями элементов вектора. С помощью
 	//разработанного Вами в предыдущем задании универсального шаблона
 	//выведите значения элементов на печать
+    {
+        cout << "[ Очередь с двумя концами - контейнер deque ]" << endl;
 
+        deque<Point> pDeque;
 
+        vector<Point> vPoint;
+        vPoint.push_back(Point(2, 2));
+        vPoint.push_back(Point(1, 1));
+        vPoint.push_back(Point(3, 3));
+        vPoint.push_back(Point(4, 4));
+        cout << "Before" << endl;
 
+        print(vPoint.begin(), vPoint.end());
+        cout << "After" << endl;
+        pDeque.assign(vPoint.begin(), vPoint.end());
+        print(pDeque.begin(), pDeque.end());
+
+    }
 	//Создайте deque с элементами типа MyString. Заполните его значениями
 	//с помощью push_back(), push_front(), insert()
 	//С помощью erase удалите из deque все элементы, в которых строчки
 	//начинаются с 'A' или 'a'
 
+    {
+        cout << "[ deque с элементами типа MyString ]" << endl;
 
+        deque<string> sDeque;
+        sDeque.push_back("fdsa");
+        sDeque.push_front("Areq");
+        sDeque.insert(sDeque.begin() + 2, "sad");
+        sDeque.push_back("asd");
+        cout << "Before" << endl;
+
+        print(sDeque.begin(), sDeque.end());
+        cout << "After" << endl;
+        auto itb = sDeque.begin();
+        while (itb != sDeque.end() ) {
+            if ( *(itb->begin()) == 'A' || *(itb->begin()) == 'a') {
+                itb = sDeque.erase(itb);
+            }else {
+                ++itb;
+            }
+        }
+        print(sDeque.begin(), sDeque.end());
+    }
 
 
 	return 0;
