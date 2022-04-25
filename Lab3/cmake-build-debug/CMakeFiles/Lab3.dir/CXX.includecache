@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/rollcorn/Programming/CPP/C210-CPP-OOP/Lab3/lab_vector_list_deque.cpp
+iostream
+-
+vector
+-
+list
+-
+deque
+-
+

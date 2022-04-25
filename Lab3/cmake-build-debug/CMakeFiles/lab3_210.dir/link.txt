@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/lab3_210.dir/lab_vector_list_deque.cpp.o  -o lab3_210 
