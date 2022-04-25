@@ -1,0 +1,3 @@
+/media/rollcorn/6470694170691AD6/Downloads/FreeCourses/CPP/C210-CPP-OOP/Lab5/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/media/rollcorn/6470694170691AD6/Downloads/FreeCourses/CPP/C210-CPP-OOP/Lab5/cmake-build-debug/CMakeFiles/edit_cache.dir
+/media/rollcorn/6470694170691AD6/Downloads/FreeCourses/CPP/C210-CPP-OOP/Lab5/cmake-build-debug/CMakeFiles/Lab5.dir
