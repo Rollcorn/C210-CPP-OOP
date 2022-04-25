@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/media/rollcorn/6470694170691AD6/Downloads/FreeCourses/CPP/C210-CPP-OOP/Lab4/main.cpp
+stack
+-
+queue
+-
+set
+-
+map
+-
+list
+-
+vector
+-
+string
+-
+cstring
+-
+clocale
+-
+iostream
+-
+
